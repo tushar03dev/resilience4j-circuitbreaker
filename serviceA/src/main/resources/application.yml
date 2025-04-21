@@ -1,0 +1,33 @@
+spring:
+  application.name: serviceA
+  jackson.serialization.indent_output: true
+
+management:
+  endpoints.web.exposure.include:
+    - '*'
+  endpoint.health.show-details: always
+  health.circuitbreakers.enabled: true
+
+resilience4j.circuitbreaker:
+  instances:
+    randomActivity:
+      registerHealthIndicator: true
+      slidingWindowSize: 5
+      minimumNumberOfCalls: 3
+      failureRateThreshold: 50
+      waitDurationInOpenState: 10s
+      permittedNumberOfCallsInHalfOpenState: 2
+      automaticTransitionFromOpenToHalfOpenEnabled: true
+      recordExceptions:
+        - java.net.UnknownHostException
+        - java.net.ConnectException
+        - java.net.SocketTimeoutException
+        - java.io.IOException
+        - java.lang.Exception
+        - java.net.SocketException
+        - org.springframework.web.client.ResourceAccessException
+
+
+joke:
+  api:
+    url: https://v2.jokeapi.dev/joke/Any
